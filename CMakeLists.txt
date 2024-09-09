@@ -1,18 +1,31 @@
-# Specify the minimum CMake version required
-cmake_minimum_required(VERSION 3.10)
 
-# Set the project name
+cmake_minimum_required(VERSION 3.14)
 project(Better_Redis)
 
-# Set the C++ standard
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Add the executable to be built from the source files
-add_executable(better-redis main.cpp)
+# Add the executable
+add_executable(better_redis main.cpp)
 
-# Include directories (optional)
-# target_include_directories(MyExecutable PRIVATE include_dir)
+# Add GoogleTest
+add_subdirectory(libs/googletest)
 
-# Link libraries (optional)
-# target_link_libraries(MyExecutable PRIVATE my_library)
+# Include directories for better-redis
+target_include_directories(better_redis PUBLIC 
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/googletest/googletest/include
+)
+
+# Link libraries for better-redis
+target_link_libraries(better_redis gtest gtest_main)
+
+# Add test executable
+add_executable(run_tests tests/database.cpp)
+target_link_libraries(run_tests gtest gtest_main)
+
+# Include directories for tests
+target_include_directories(run_tests PUBLIC 
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/googletest/googletest/include
+)
+
