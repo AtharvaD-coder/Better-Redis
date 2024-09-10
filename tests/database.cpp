@@ -1,10 +1,13 @@
 #include "../storage/database.cpp"
+#include "../storage/bucket.cpp"
+#include "../storage/hasher.cpp"
+#include "../storage/segment.cpp"
 #include <gtest/gtest.h>
 
 TEST(CrudOperations, InsertAndRetreive) {
 	Database db;
 	db.Put("key1", "value1");
-	EXPECT_EQ(db.Get("key1"), "valuu1");
+	EXPECT_EQ(db.Get("key1"), "value1");
 }
 
 // Main function to run tests

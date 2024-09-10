@@ -1,18 +1,18 @@
+#pragma once
+#include "hasher.hpp"
+#include "segment.hpp"
+#include <memory>
 #include <string>
 #include <vector>
 using namespace std;
-class Bucket {
-	vector<pair<string, string>> slots;
-};
-class Segment {
-	vector<Bucket> buckets;
-	void Put(string key, string value);
-};
 
 class Database {
-	vector<Segment> segments;
+	vector<pair<size_t, shared_ptr<Segment>>> segments;
+	unique_ptr<Hasher<Segment>> hasher;
 
   public:
+	Database();
+	int NoOfSegments();
 	string Get(string key);
 	void Put(string key, string value);
 	void Update(string key, string value);
