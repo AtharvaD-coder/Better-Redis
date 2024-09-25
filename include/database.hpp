@@ -8,7 +8,7 @@ using namespace std;
 
 class Database {
 	vector<pair<size_t, shared_ptr<Segment>>> segments;
-	unique_ptr<Hasher<Segment>> hasher;
+	unique_ptr<Hasher> hasher;
 
   public:
 	Database();
@@ -17,4 +17,5 @@ class Database {
 	void Put(string key, string value);
 	void Update(string key, string value);
 	void Delete(string key);
+	void Rehash(size_t segmentIndex);
 };
