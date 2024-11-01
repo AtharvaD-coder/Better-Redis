@@ -11,6 +11,7 @@ class Segment {
 	Segment();
 	void Put(string key, string value,size_t segmentHash);
 	string Get(string key,size_t segmentHash);
+	void Delete(string key,size_t segmentHash);
 	vector<pair<string, string>> DeleteAll();
 	void print();
 };

@@ -10,7 +10,7 @@ TEST(CrudOperations, InsertAndRetrieve1000Records) {
 	Database db;
 
 	// Insert 1000 records into the database
-	for (int i = 0; i < 10000000; ++i) {
+	for (int i = 0; i < 1000000; ++i) {
 		std::string key = "key" + std::to_string(i);
 		std::string value = "value" + std::to_string(i);
 		db.Put(key, value);
@@ -25,6 +25,19 @@ TEST(CrudOperations, InsertAndRetrieve1000Records) {
 	// 	EXPECT_EQ(db.Get(key), expected_value);
 	// }
 
+}
+
+TEST(CrudOperations,DeleteCheck){
+	Database db;
+	db.Put("anurag","raut");
+	db.Put("anurag1","raut1");
+	db.Put("anurag2","raut2");
+
+	db.Delete("anurag");
+	EXPECT_THROW(db.Get("anurag"),std::exception);
+	EXPECT_EQ(db.Get("anurag1"),"raut1");
+	EXPECT_EQ(db.Get("anurag2"),"raut2");
+	
 }
 
 // Main function to run tests

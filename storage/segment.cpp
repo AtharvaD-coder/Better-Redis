@@ -79,6 +79,21 @@ vector<pair<string, string>> Segment::DeleteAll() {
 	return values;
 }
 
+void Segment::Delete(string key,size_t segmentHash) {
+	pair<shared_ptr<Bucket>, size_t> getBuckResult = GetBucket(key,segmentHash);
+	shared_ptr<Bucket> buck = getBuckResult.first;
+	size_t bucketIndex = getBuckResult.second;
+	try {
+		buck->Delete(key);
+	} catch (const std::exception& e) {
+		try {
+			shared_ptr<Bucket> newbuck =
+				buckets[(bucketIndex + 1) % buckets.size()];
+			newbuck->Delete(key);
+		} catch (const std::exception& e) { throw e; }
+	}
+}
+
 void Segment::print() {
 	int index = 0;
 	for (auto& bucks : buckets) {

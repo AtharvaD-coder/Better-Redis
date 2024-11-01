@@ -46,6 +46,17 @@ vector<pair<string, string>> Bucket::DeleteAll() {
 	}
 	return values;
 }
+void Bucket::Delete(string key) {
+	for (auto& slot : slots) {
+		if (slot.first == key) {
+			slot.first.clear();
+			slot.second.clear();
+			return;
+		}
+	}
+	throw runtime_error("VALUE NOT PRESENT");
+}
+
 void Bucket::print(){
 	for (auto& slot : slots) {
 		if(slot.first.empty()){

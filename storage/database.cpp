@@ -43,9 +43,7 @@ void Database::Put(string key, string value) {
 }
 
 void Database::Rehash(size_t segmentIndex) {
-	// cout<<"WE STARTING REHASH"<<endl;
-	// this->print();
-	// cout<<"WE DONE PRINTING"<<endl;
+
 	this->rehashCounter++;
 	shared_ptr<Segment> seg = segments[segmentIndex].second;
 	hasher->RehashHelper(segmentIndex);
@@ -53,8 +51,7 @@ void Database::Rehash(size_t segmentIndex) {
 	for (const auto& [key, value] : deletedValues) {
 		this->Put(key, value);
 	};
-	// cout << "AFTER REHASED: " << endl;
-	// this->print();
+
 }
 
 string Database::Get(string key) {
@@ -79,6 +76,16 @@ void Database::print() {
 	}
 	cout << endl;
 	cout << endl;
+}
+
+void Database::Delete(string key) {
+	try {
+		auto [segment, segmentIndex,segmentHash] = hasher->GetElement(key);
+		segment->Delete(key,segmentHash);
+	} catch (const exception& e) {
+		// cout << "ERROR WHILE DELETING: " << e.what() << endl;
+		throw e;
+	}
 }
 
 void Database::Update(string key, string value) {}
