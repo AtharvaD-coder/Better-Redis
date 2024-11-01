@@ -10,5 +10,4 @@ using namespace std;
 int main(int argc, char** argv) {
 	Database* db = new Database();
 	db->Put("anurag", "raut");
-	cout << db->Get("anurag") << endl;
 }

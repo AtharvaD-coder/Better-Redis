@@ -12,10 +12,12 @@ class Database {
 
   public:
 	Database();
+	int rehashCounter=0;
 	int NoOfSegments();
 	string Get(string key);
 	void Put(string key, string value);
 	void Update(string key, string value);
 	void Delete(string key);
 	void Rehash(size_t segmentIndex);
+	void print();
 };

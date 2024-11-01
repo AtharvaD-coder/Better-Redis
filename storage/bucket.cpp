@@ -1,6 +1,7 @@
 
 #include "../include/bucket.hpp"
 #include "../include/errors.hpp"
+#include "../include/globals.hpp"
 #include <iostream>
 #include <iterator>
 #include <stdexcept>
@@ -9,11 +10,13 @@
 
 using namespace std;
 
-Bucket::Bucket() { slots.resize(10); }
+Bucket::Bucket() { slots.resize(SLOT_SIZE); }
 
 void Bucket::Put(string key, string value) {
-	for (auto& slot : slots) {
+	for (size_t i = 0; i < slots.size(); ++i) {
+		auto& slot = slots[i];
 		if (slot.first.empty()) {
+			// cout<<"PUTTING IN SLOT: "<<i<<endl;
 			slot.first = key;
 			slot.second = value;
 			return;
@@ -24,6 +27,7 @@ void Bucket::Put(string key, string value) {
 
 string Bucket::Get(string key) {
 	for (auto& slot : slots) {
+		// cout << "SLOT FIRST " << slot.first << endl;
 		if (slot.first == key) {
 			return slot.second;
 		}
@@ -41,4 +45,17 @@ vector<pair<string, string>> Bucket::DeleteAll() {
 		}
 	}
 	return values;
+}
+void Bucket::print(){
+	for (auto& slot : slots) {
+		if(slot.first.empty()){
+		// cout<<"_ ";
+
+		}
+		else{
+
+		// cout<<slot.first<<" ";
+		}
+	}
+	// cout<<endl;
 }
