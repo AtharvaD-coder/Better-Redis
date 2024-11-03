@@ -1,65 +1,76 @@
 #include "../include/shard.hpp"
+#include <atomic>
+#include <memory>
 using namespace std;
 
-
+moodycamel::ConcurrentQueue<shared_ptr<TransactionWrapper>> transactionQueue;
 
 Shard::Shard() : dahtable(Dashtable()), running(true) {
     shardThread = thread(&Shard::run, this);
 }
 
 void Shard::shutdown() {
-    running = false; 
-    queueCondition.notify_all(); 
+    running.store(false, memory_order_relaxed);
 }
 
 void Shard::run() {
-    while (running) {
-        unique_lock<mutex> lock(queueMutex);
-        queueCondition.wait(lock, [this] { return !transactionQueue.empty() || !running; });
+    while (running.load(memory_order_relaxed)) {
+        shared_ptr<TransactionWrapper> wrapper;
 
-        if (!running && transactionQueue.empty()) {
-            break; 
-        }
-
-        if (!transactionQueue.empty()) {
-            shared_ptr<TransactionWrapper> wrapper = move(transactionQueue.front());
-            transactionQueue.pop();
-            lock.unlock();
-
+        if (transactionQueue.try_dequeue(wrapper)) {
             switch (wrapper->transaction.type) {
                 case PUT:
                     dahtable.Put(wrapper->transaction.key, wrapper->transaction.value);
                     wrapper->promiseObj.set_value("Put successful");
                     break;
+                
                 case DELETE:
                     dahtable.Delete(wrapper->transaction.key);
                     wrapper->promiseObj.set_value("Delete successful");
                     break;
+                
                 case GET: {
                     string result = dahtable.Get(wrapper->transaction.key);
                     wrapper->promiseObj.set_value(result);
                     break;
                 }
             }
+        } else {
+            this_thread::sleep_for(chrono::milliseconds(3));
+        }
+    }
+
+    shared_ptr<TransactionWrapper> remainingWrapper;
+    while (transactionQueue.try_dequeue(remainingWrapper)) {
+        switch (remainingWrapper->transaction.type) {
+            case PUT:
+                dahtable.Put(remainingWrapper->transaction.key, remainingWrapper->transaction.value);
+                remainingWrapper->promiseObj.set_value("Put successful");
+                break;
+            case DELETE:
+                dahtable.Delete(remainingWrapper->transaction.key);
+                remainingWrapper->promiseObj.set_value("Delete successful");
+                break;
+            case GET: {
+                string result = dahtable.Get(remainingWrapper->transaction.key);
+                remainingWrapper->promiseObj.set_value(result);
+                break;
+            }
         }
     }
 }
 
 future<string> Shard::submitTransaction(Transaction transaction) {
-    auto wrapper = make_shared<TransactionWrapper>(transaction); 
+    auto wrapper = make_shared<TransactionWrapper>(transaction);
+    
+    transactionQueue.enqueue(wrapper);
 
-    lock_guard<mutex> lock(queueMutex);
-    transactionQueue.push(wrapper);
-    queueCondition.notify_one();
-
-    return wrapper->promiseObj.get_future(); 
+    return wrapper->promiseObj.get_future();
 }
 
 Shard::~Shard() {
-    cout << "Shard DESTRUCTOR CALLED" << endl;
     shutdown();
     if (shardThread.joinable()) {
-        cout << "Joining shard thread" << endl;
         shardThread.join();
     }
 }

@@ -8,6 +8,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <atomic>
+#include "../libs/concurrentqueue/concurrentqueue.h"  
 
 
 using namespace std;
@@ -22,7 +23,7 @@ public:
 class Shard{
     Dashtable dahtable;
     thread shardThread;
-    queue<shared_ptr<TransactionWrapper>> transactionQueue;
+    moodycamel::ConcurrentQueue<shared_ptr<TransactionWrapper>> transactionQueue;
     mutex queueMutex;
     condition_variable queueCondition;
     atomic<bool> running;
