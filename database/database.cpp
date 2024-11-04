@@ -11,7 +11,7 @@ Database::Database(int noOfShards = thread::hardware_concurrency()) {
 	this->noOfShards = noOfShards;
 	cout << "NO OF SHARDS: " << noOfShards << endl;
 	for (int i = 0; i < noOfShards; i++) {
-		shards.emplace_back(make_shared<Shard>());
+		shards.emplace_back(new Shard());
 	}
 	// cout<<"DONE"<<endl;
 }
@@ -30,7 +30,7 @@ string Database::Get(string key) {
 	int shardIndex = getShard(key);
 	auto end = std::chrono::high_resolution_clock::now();
 
-	shared_ptr<Shard> shard = shards[shardIndex];
+	Shard* shard = shards[shardIndex];
 	future<string> resultFuture =
 		shard->submitTransaction(Transaction{GET, key, ""});
 	string result = resultFuture.get();
@@ -40,7 +40,7 @@ string Database::Get(string key) {
 void Database::Put(string key, string value) {
 
 	int shardIndex = getShard(key);
-	shared_ptr<Shard> shard = shards[shardIndex];
+	Shard* shard = shards[shardIndex];
 	// auto start = std::chrono::high_resolution_clock::now();
 
 	future<string> resultFuture =
@@ -54,7 +54,7 @@ void Database::Put(string key, string value) {
 
 void Database::Delete(string key) {
 	int shardIndex = getShard(key);
-	shared_ptr<Shard> shard = shards[shardIndex];
+	Shard* shard = shards[shardIndex];
 	future<string> resultFuture =
 		shard->submitTransaction(Transaction{DELETE, key, ""});
 	string result = resultFuture.get();

@@ -13,13 +13,13 @@ TEST(CrudOperations, InsertAndRetrieve1000Records) {
     auto start = std::chrono::high_resolution_clock::now();
 
 	// Insert 1000 records into the dashtable
-	for (int i = 0; i < 1000000; ++i) {
+	for (int i = 0; i < 20000000; ++i) {
 		std::string key = "key" + std::to_string(i);
 		std::string value = "value" + std::to_string(i);
 		db.Put(key, value);
 	}
 	// sleep(8);
-	cout<<db.Get("key999999")<<endl;;
+	// cout<<db.Get("key999999")<<endl;;
 	auto end = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 	cout<<"TIME TAKEN FOR DATABASE: "<<duration.count()<<endl;

@@ -12,14 +12,14 @@
 using namespace std;
 void Segment::Put(string key, string value,size_t segmentHash) {
 
-	pair<shared_ptr<Bucket>, size_t> getBuckResult = GetBucket(key,segmentHash);
-	shared_ptr<Bucket> buck = getBuckResult.first;
+	pair<Bucket*, size_t> getBuckResult = GetBucket(key,segmentHash);
+	Bucket* buck = getBuckResult.first;
 	size_t bucketIndex = getBuckResult.second;
 	try {
 		buck->Put(key, value);
 		// cout << "Bucket index: " << bucketIndex << endl;
 	} catch (const BucketFullException& e) {
-		shared_ptr<Bucket> newbucket =
+		Bucket* newbucket =
 			buckets[(bucketIndex + 1) % buckets.size()];
 		try {
 			newbucket->Put(key, value);
@@ -31,8 +31,8 @@ void Segment::Put(string key, string value,size_t segmentHash) {
 
 string Segment::Get(string key,size_t segmentHash) {
     
-    pair<shared_ptr<Bucket>, size_t> getBuckResult = GetBucket(key,segmentHash);
-	shared_ptr<Bucket> buck = getBuckResult.first;
+    pair<Bucket*, size_t> getBuckResult = GetBucket(key,segmentHash);
+	Bucket* buck = getBuckResult.first;
 	size_t bucketIndex = getBuckResult.second;
 	// cout << "GETTING BUCKET INDEX: " << bucketIndex << endl;
 	try {
@@ -41,7 +41,7 @@ string Segment::Get(string key,size_t segmentHash) {
 	} catch (const std::exception& e) {
 		try {
 
-			shared_ptr<Bucket> newbuck =
+			Bucket* newbuck =
 				buckets[(bucketIndex + 1) % buckets.size()];
 
 			return newbuck->Get(key);
@@ -51,7 +51,7 @@ string Segment::Get(string key,size_t segmentHash) {
 	
 }
 
-pair<shared_ptr<Bucket>, size_t> Segment::GetBucket(string key,size_t segmentHash) const {
+pair<Bucket*, size_t> Segment::GetBucket(string key,size_t segmentHash) const {
 	string combinedKey = key + to_string(segmentHash);
 	size_t hashValue = hash<string>{}(combinedKey);
 
@@ -62,10 +62,10 @@ pair<shared_ptr<Bucket>, size_t> Segment::GetBucket(string key,size_t segmentHas
 
 Segment::Segment() {
 	for (size_t i = 0; i < BUCKET_SIZE; i++) {
-		buckets.push_back(make_shared<Bucket>());
+		buckets.push_back(new Bucket());
 	}
 	for (auto& bucket : buckets) {
-		bucket = make_shared<Bucket>();
+		bucket = new Bucket();
 	}
 }
 
@@ -80,14 +80,14 @@ vector<pair<string, string>> Segment::DeleteAll() {
 }
 
 void Segment::Delete(string key,size_t segmentHash) {
-	pair<shared_ptr<Bucket>, size_t> getBuckResult = GetBucket(key,segmentHash);
-	shared_ptr<Bucket> buck = getBuckResult.first;
+	pair<Bucket*, size_t> getBuckResult = GetBucket(key,segmentHash);
+	Bucket* buck = getBuckResult.first;
 	size_t bucketIndex = getBuckResult.second;
 	try {
 		buck->Delete(key);
 	} catch (const std::exception& e) {
 		try {
-			shared_ptr<Bucket> newbuck =
+			Bucket* newbuck =
 				buckets[(bucketIndex + 1) % buckets.size()];
 			newbuck->Delete(key);
 		} catch (const std::exception& e) { throw e; }

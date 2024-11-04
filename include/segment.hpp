@@ -4,8 +4,8 @@
 #include <string>
 using namespace std;
 class Segment {
-	vector<shared_ptr<Bucket>> buckets;
-	pair<shared_ptr<Bucket>, size_t> GetBucket(string key,size_t segmentHash) const;
+	vector<Bucket*> buckets;
+	pair<Bucket*, size_t> GetBucket(string key,size_t segmentHash) const;
 
   public:
 	Segment();

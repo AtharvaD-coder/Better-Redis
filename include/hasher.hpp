@@ -10,12 +10,12 @@ using namespace std;
 
 class Hasher {
   private:
-	vector<pair<size_t, shared_ptr<Segment>>>& ring;
+	vector<pair<size_t, Segment*>>& ring;
 	size_t HashFunction(string key) const;
 
   public:
-	Hasher(vector<pair<size_t, shared_ptr<Segment>>>& vec);
-	tuple<shared_ptr<Segment>, size_t, size_t> GetElement(string key);
+	Hasher(vector<pair<size_t, Segment*>>& vec);
+	tuple<Segment*, size_t, size_t> GetElement(string key);
 	void AddElement();
 	void RehashHelper(size_t segmentIndex);
 };

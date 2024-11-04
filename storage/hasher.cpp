@@ -10,13 +10,13 @@
 #include <tuple>
 #include <utility>
 
-Hasher::Hasher(vector<pair<size_t, shared_ptr<Segment>>>& ring) : ring(ring) {
+Hasher::Hasher(vector<pair<size_t, Segment*>>& ring) : ring(ring) {
 	for (size_t i = 0; i < SEGMENT_SIZE; i++) {
 		AddElement();
 	}
 }
 
-tuple<shared_ptr<Segment>, size_t, size_t> Hasher::GetElement(string key) {
+tuple<Segment*, size_t, size_t> Hasher::GetElement(string key) {
 	if (ring.empty()) {
 		throw std::runtime_error("No Segments available");
 	}
@@ -24,9 +24,9 @@ tuple<shared_ptr<Segment>, size_t, size_t> Hasher::GetElement(string key) {
 	size_t hashValue = HashFunction(key);
 
 	auto it = lower_bound(ring.begin(), ring.end(),
-						  make_pair(hashValue, shared_ptr<Segment>{}),
-						  [](const pair<size_t, shared_ptr<Segment>>& a,
-							 const pair<size_t, shared_ptr<Segment>>& b) {
+						  make_pair(hashValue, static_cast<Segment*>(nullptr)),
+						  [](const pair<size_t, Segment*>& a,
+							 const pair<size_t, Segment*>& b) {
 							  return a.first < b.first;
 						  });
 
@@ -46,10 +46,10 @@ tuple<shared_ptr<Segment>, size_t, size_t> Hasher::GetElement(string key) {
 
 void Hasher::AddElement() {
 	size_t hashValue = HashFunction(to_string(ring.size()));
-	ring.push_back(make_pair(hashValue, make_shared<Segment>()));
+	ring.push_back(make_pair(hashValue, new Segment()));
 	sort(ring.begin(), ring.end(),
-		 [](const pair<size_t, shared_ptr<Segment>>& a,
-			const pair<size_t, shared_ptr<Segment>>& b) {
+		 [](const pair<size_t, Segment*>& a,
+			const pair<size_t, Segment*>& b) {
 			 return a.first < b.first;
 		 });
 }
@@ -85,14 +85,14 @@ void Hasher::RehashHelper(size_t segmentIndex) {
 	}
 
 	ring.insert(ring.begin() + segmentIndex,
-				make_pair(midhashValue, std::make_shared<Segment>()));
+				make_pair(midhashValue, new Segment()));
 
 	// print all the elements in the ring
 
 
 	std::sort(ring.begin(), ring.end(),
-			  [](const std::pair<size_t, std::shared_ptr<Segment>>& a,
-				 const std::pair<size_t, std::shared_ptr<Segment>>& b) {
+			  [](const std::pair<size_t, Segment*>& a,
+				 const std::pair<size_t, Segment*>& b) {
 				  return a.first < b.first;
 			  });
 }

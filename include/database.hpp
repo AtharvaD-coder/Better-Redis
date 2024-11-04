@@ -9,7 +9,7 @@ using namespace std;
 class Database {
 
 	int noOfShards;
-	vector<shared_ptr<Shard>> shards;
+	vector<Shard*> shards;
     int getShard(string key);
 
   public:

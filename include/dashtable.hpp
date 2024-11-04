@@ -9,7 +9,7 @@
 using namespace std;
 
 class Dashtable {
-	vector<pair<size_t, shared_ptr<Segment>>> segments;
+	vector<pair<size_t,Segment*	>> segments;
 	queue<Transaction> transaction_queue;
 	unique_ptr<Hasher> hasher;
 

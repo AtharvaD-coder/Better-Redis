@@ -3,7 +3,7 @@
 #include <memory>
 using namespace std;
 
-moodycamel::ConcurrentQueue<shared_ptr<TransactionWrapper>> transactionQueue;
+moodycamel::ConcurrentQueue<TransactionWrapper*> transactionQueue;
 
 Shard::Shard() : dahtable(Dashtable()), running(true) {
     shardThread = thread(&Shard::run, this);
@@ -15,7 +15,7 @@ void Shard::shutdown() {
 
 void Shard::run() {
     while (running.load(memory_order_relaxed)) {
-        shared_ptr<TransactionWrapper> wrapper;
+        TransactionWrapper* wrapper;
 
         if (transactionQueue.try_dequeue(wrapper)) {
             switch (wrapper->transaction.type) {
@@ -40,7 +40,7 @@ void Shard::run() {
         }
     }
 
-    shared_ptr<TransactionWrapper> remainingWrapper;
+    TransactionWrapper* remainingWrapper;
     while (transactionQueue.try_dequeue(remainingWrapper)) {
         switch (remainingWrapper->transaction.type) {
             case PUT:
@@ -61,7 +61,7 @@ void Shard::run() {
 }
 
 future<string> Shard::submitTransaction(Transaction transaction) {
-    auto wrapper = make_shared<TransactionWrapper>(transaction);
+    auto wrapper = new TransactionWrapper(transaction);
     
     transactionQueue.enqueue(wrapper);
 

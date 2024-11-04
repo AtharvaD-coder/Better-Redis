@@ -23,7 +23,7 @@ public:
 class Shard{
     Dashtable dahtable;
     thread shardThread;
-    moodycamel::ConcurrentQueue<shared_ptr<TransactionWrapper>> transactionQueue;
+    moodycamel::ConcurrentQueue<TransactionWrapper*> transactionQueue;
     mutex queueMutex;
     condition_variable queueCondition;
     atomic<bool> running;

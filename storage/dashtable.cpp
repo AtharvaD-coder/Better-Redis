@@ -12,7 +12,7 @@ int Dashtable::NoOfSegments() { return this->segments.size(); }
 
 void Dashtable::Put(string key, string value) {
 	// cout << "PUTTING: kV" << key << " " << value << endl;
-	shared_ptr<Segment> segment;
+	Segment* segment;
 	size_t segmentIndex;
 	size_t segmentHash;
 	try {
@@ -45,7 +45,7 @@ void Dashtable::Put(string key, string value) {
 void Dashtable::Rehash(size_t segmentIndex) {
 
 	this->rehashCounter++;
-	shared_ptr<Segment> seg = segments[segmentIndex].second;
+	Segment* seg = segments[segmentIndex].second;
 	hasher->RehashHelper(segmentIndex);
 	vector<pair<string, string>> deletedValues = seg->DeleteAll();
 	for (const auto& [key, value] : deletedValues) {
