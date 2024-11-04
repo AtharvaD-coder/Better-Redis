@@ -15,7 +15,8 @@ add_subdirectory(libs/googletest)
 target_include_directories(better_redis PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/libs/googletest/googletest/include
-)
+    ${CMAKE_SOURCE_DIR}/libs/concurrentqueue
+    )
 
 # Link libraries for better-redis
 target_link_libraries(better_redis gtest gtest_main)

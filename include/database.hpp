@@ -1,20 +1,21 @@
 #pragma once
-#include "hasher.hpp"
-#include "segment.hpp"
+#include <vector>
 #include <memory>
 #include <string>
-#include <vector>
+#include "./shard.hpp"
+
 using namespace std;
 
 class Database {
-	vector<pair<size_t, shared_ptr<Segment>>> segments;
-	unique_ptr<Hasher<Segment>> hasher;
+
+	int noOfShards;
+	vector<Shard*> shards;
+    int getShard(string key);
 
   public:
-	Database();
-	int NoOfSegments();
+    Database(int noOfShards);
+    ~Database();
 	string Get(string key);
 	void Put(string key, string value);
-	void Update(string key, string value);
 	void Delete(string key);
 };

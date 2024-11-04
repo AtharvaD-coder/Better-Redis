@@ -10,4 +10,7 @@ class Bucket {
 	Bucket();
 	void Put(string key, string value);
 	string Get(string key);
+	vector<pair<string, string>> DeleteAll();
+	void Delete(string key);
+	void print();
 };

@@ -4,11 +4,14 @@
 #include <string>
 using namespace std;
 class Segment {
-	vector<shared_ptr<Bucket>> buckets;
-	shared_ptr<Bucket> GetBucket(string key) const;
+	vector<Bucket*> buckets;
+	pair<Bucket*, size_t> GetBucket(string key,size_t segmentHash) const;
 
   public:
 	Segment();
-	void Put(string key, string value);
-	string Get(string key);
+	void Put(string key, string value,size_t segmentHash);
+	string Get(string key,size_t segmentHash);
+	void Delete(string key,size_t segmentHash);
+	vector<pair<string, string>> DeleteAll();
+	void print();
 };

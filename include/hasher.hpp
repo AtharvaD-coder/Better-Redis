@@ -1,15 +1,22 @@
+
 #pragma once
+#include "segment.hpp"
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 using namespace std;
-template <typename T> class Hasher {
-	vector<pair<size_t, shared_ptr<T>>>& ring;
+
+class Hasher {
+  private:
+	vector<pair<size_t, Segment*>>& ring;
 	size_t HashFunction(string key) const;
+	void sortRing();
 
   public:
-	Hasher(vector<pair<size_t, shared_ptr<T>>>& vec);
-	shared_ptr<T> GetElement(string key);
+	Hasher(vector<pair<size_t, Segment*>>& vec);
+	tuple<Segment*, size_t, size_t> GetElement(string key);
 	void AddElement();
+	void RehashHelper(size_t segmentIndex);
 };
