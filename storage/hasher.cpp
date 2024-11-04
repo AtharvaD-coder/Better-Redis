@@ -10,10 +10,15 @@
 #include <tuple>
 #include <utility>
 
+using namespace std;
+
+
+
 Hasher::Hasher(vector<pair<size_t, Segment*>>& ring) : ring(ring) {
 	for (size_t i = 0; i < SEGMENT_SIZE; i++) {
 		AddElement();
 	}
+	sortRing();
 }
 
 tuple<Segment*, size_t, size_t> Hasher::GetElement(string key) {
@@ -47,11 +52,7 @@ tuple<Segment*, size_t, size_t> Hasher::GetElement(string key) {
 void Hasher::AddElement() {
 	size_t hashValue = HashFunction(to_string(ring.size()));
 	ring.push_back(make_pair(hashValue, new Segment()));
-	sort(ring.begin(), ring.end(),
-		 [](const pair<size_t, Segment*>& a,
-			const pair<size_t, Segment*>& b) {
-			 return a.first < b.first;
-		 });
+	
 }
 
 size_t Hasher::HashFunction(string key) const {
@@ -83,13 +84,23 @@ void Hasher::RehashHelper(size_t segmentIndex) {
 			prevElementHashValue +
 			((currentElementHashValue - prevElementHashValue) / 2));
 	}
+	if(segmentIndex==0 && midhashValue>ring[0].first){
+		ring.push_back(make_pair(midhashValue, new Segment()));
+	}
+	else{
+		ring.insert(ring.begin() + segmentIndex,make_pair(midhashValue, new Segment()));
 
-	ring.insert(ring.begin() + segmentIndex,
-				make_pair(midhashValue, new Segment()));
+	}
+	
+	
 
-	// print all the elements in the ring
 
 
+
+}
+
+
+void Hasher::sortRing() {
 	std::sort(ring.begin(), ring.end(),
 			  [](const std::pair<size_t, Segment*>& a,
 				 const std::pair<size_t, Segment*>& b) {

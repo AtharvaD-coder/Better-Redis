@@ -12,6 +12,7 @@ class Hasher {
   private:
 	vector<pair<size_t, Segment*>>& ring;
 	size_t HashFunction(string key) const;
+	void sortRing();
 
   public:
 	Hasher(vector<pair<size_t, Segment*>>& vec);

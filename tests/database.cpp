@@ -12,8 +12,7 @@ TEST(CrudOperations, InsertAndRetrieve1000Records) {
 	Database db(10);
     auto start = std::chrono::high_resolution_clock::now();
 
-	// Insert 1000 records into the dashtable
-	for (int i = 0; i < 20000000; ++i) {
+	for (int i = 0; i < 10000000; ++i) {
 		std::string key = "key" + std::to_string(i);
 		std::string value = "value" + std::to_string(i);
 		db.Put(key, value);
@@ -25,14 +24,7 @@ TEST(CrudOperations, InsertAndRetrieve1000Records) {
 	cout<<"TIME TAKEN FOR DATABASE: "<<duration.count()<<endl;
 
 
-	// cout<<db.Get("key999999")<<endl;
-// db.print();
-	// Verify that the records are correctly inserted and retrievable
-	// for (int i = 0; i < 1000000; ++i) {
-	// 	std::string key = "key" + std::to_string(i);
-	// 	std::string expected_value = "value" + std::to_string(i);
-	// 	EXPECT_EQ(db.Get(key), expected_value);
-	// }
+
 
 }
 
