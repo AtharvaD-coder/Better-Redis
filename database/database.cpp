@@ -61,6 +61,6 @@ void Database::Delete(string key) {
 }
 
 Database::~Database() {
-	cout << "DatabseDESTRUCTOR CALLED" << endl;
+	// cout << "DatabseDESTRUCTOR CALLED" << endl;
 	shards.clear();
 }
