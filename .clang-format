@@ -1,0 +1,25 @@
+
+# .clang-format
+
+BasedOnStyle: LLVM
+
+# Use tabs for indentation
+UseTab: Always
+TabWidth: 4
+IndentWidth: 4
+
+# Line breaking settings
+BreakBeforeBraces: Attach
+AllowShortBlocksOnASingleLine: Always  # Corrected value
+AllowShortFunctionsOnASingleLine: All  # This is valid for short functions
+
+# Column width settings
+ColumnLimit: 80
+
+# Pointer and reference formatting
+PointerAlignment: Left
+
+# Space settings
+SpaceBeforeParens: ControlStatements
+SpaceAfterCStyleCast: false
+SpacesInParentheses: false

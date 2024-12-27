@@ -1,0 +1,9 @@
+[submodule "libs/googletest"]
+	path = libs/googletest
+	url = https://github.com/google/googletest.git
+[submodule "libs/concurrentqueue"]
+	path = libs/concurrentqueue
+	url = https://github.com/cameron314/concurrentqueue.git
+[submodule "libs/hiredis"]
+	path = libs/hiredis
+	url = https://github.com/redis/hiredis.git
