@@ -64,7 +64,7 @@ string Dashtable::Get(string key) {
 
 	} catch (const exception& e) {
 		// cout << "ERROR WHILE GETTING: " << e.what() << endl;
-		throw e;
+		return ""
 	}
 }
 
